@@ -1,0 +1,4 @@
+paths:
+  raw: "./data/raw"
+  cleaned: "./data/cleaned"
+  sentiments: "./data/sentiments"
