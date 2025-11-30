@@ -38,7 +38,7 @@ class MehrnewsSpider(scrapy.Spider):
         publish_date = meta.get("list_date")
         category = response.xpath('//ol[@class="breadcrumb"]//li[last()]/a/text()').get()
         summary = response.xpath("//meta[@name='description']/@content").get()
-        body_paragraphs = response.xpath('//div[@class="item-body"]//p//text()').getall()[:-1]
+        body_paragraphs = response.xpath('//div[@class="item-body"]//p//text()').getall()
         body = "\n".join([p.strip() for p in body_paragraphs if p.strip()])
         tags = response.xpath('//a[@rel="tag"]/text()').getall()
         tags = [t.strip() for t in tags]
