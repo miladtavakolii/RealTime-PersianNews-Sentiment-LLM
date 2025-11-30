@@ -10,6 +10,7 @@ class NewsArticleItem(scrapy.Item):
     title = scrapy.Field()
     publication_date = scrapy.Field()
     content = scrapy.Field()
+    summary = scrapy.Field()
     category = scrapy.Field()
     tags = scrapy.Field()
     url = scrapy.Field()
