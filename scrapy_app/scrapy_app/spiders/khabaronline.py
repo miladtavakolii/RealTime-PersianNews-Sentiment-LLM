@@ -1,4 +1,3 @@
-from hmac import new
 import scrapy
 from scrapy_app.items import NewsArticleItem  
 
