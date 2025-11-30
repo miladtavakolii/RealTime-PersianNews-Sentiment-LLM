@@ -10,3 +10,10 @@ class ScrapyAppItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     pass
+
+class NewsArticleItem(scrapy.Item):
+    title = scrapy.Field()
+    publication_date = scrapy.Field()
+    content = scrapy.Field()
+    cattegory = scrapy.Field()
+    url = scrapy.Field()
