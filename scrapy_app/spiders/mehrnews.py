@@ -8,6 +8,11 @@ class MehrnewsSpider(scrapy.Spider):
     allowed_domains = ["www.mehrnews.com"]
     start_urls = ["https://www.mehrnews.com/archive"]
 
+    def __init__(self, start_date=None, end_date=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.start_date = start_date
+        self.end_date = end_date
+        
     def parse(self, response):
         '''Parse the archive/listing page to extract article links and metadata.'''
         blocks = response.xpath("//div[@class='desc']")

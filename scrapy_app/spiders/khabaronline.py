@@ -8,6 +8,11 @@ class KhabaronlineSpider(scrapy.Spider):
     allowed_domains = ["khabaronline.ir"]
     start_urls = ["https://khabaronline.ir/archive"]
 
+    def __init__(self, start_date=None, end_date=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.start_date = start_date
+        self.end_date = end_date
+        
     def parse(self, response):
         '''Parse the archive/listing page to extract article links and metadata.'''
         blocks = response.xpath("//div[@class='desc']")
