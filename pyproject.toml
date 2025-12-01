@@ -1,0 +1,10 @@
+[project]
+name = "realtime-persiannews-sentiment-llm"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "hazm>=0.10.0",
+    "scrapy>=2.13.4",
+]
