@@ -20,6 +20,8 @@ class IsnaSpider(scrapy.Spider):
             title = b.xpath(".//h3/a/text()").get()
             href = b.xpath(".//h3/a/@href").get()
             date = parse_date(b.xpath("normalize-space(.//time//text())").get())
+            timestamp = date.timestamp()
+            date = date.isoformat()
 
             if href:
                 url = response.urljoin(href.strip())
@@ -29,7 +31,7 @@ class IsnaSpider(scrapy.Spider):
             yield scrapy.Request(
                 url,
                 callback=self.parse_article,
-                meta={"list_title": title, "list_date": date}
+                meta={"title": title, "date": date, "timestamp": timestamp}
             )
 
         next_page = response.xpath("//a[contains(@class,'next') or contains(text(),'بعدی')]/@href").get()
@@ -39,9 +41,10 @@ class IsnaSpider(scrapy.Spider):
     def parse_article(self, response):
         news_item = NewsArticleItem()
         meta = response.meta
-        title = meta.get("list_title")
+        title = meta.get("title")
         url = response.url
-        publish_date = meta.get("list_date")
+        publish_date = meta.get("date")
+        publish_timestamp = meta.get("timestamp")
         category = response.xpath('//li[.//i[contains(@class, "fa-folder-o")]]//span[@class="text-meta"]/text()').get().strip()
         summary = response.xpath("//meta[@name='description']/@content").get()
         body_paragraphs = response.xpath('//div[@itemprop="articleBody"]//text()').getall()
@@ -51,6 +54,7 @@ class IsnaSpider(scrapy.Spider):
 
         news_item['title'] = title
         news_item['publication_date'] = publish_date
+        news_item['publication_timestamp'] = int(publish_timestamp)
         news_item['content'] = body
         news_item['summary'] = summary
         news_item['category'] = category

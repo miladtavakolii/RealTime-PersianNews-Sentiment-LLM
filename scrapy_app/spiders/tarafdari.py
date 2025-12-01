@@ -20,6 +20,8 @@ class TarafdariSpider(scrapy.Spider):
             title = b.xpath('.//h2//a/text()').get()
             href = b.xpath('.//h2//a/@href').get()
             date = parse_date(b.xpath('.//abbr[@class="timeago"]/@title').get())
+            timestamp = date.timestamp()
+            date = date.isoformat()
 
             if href:
                 url = response.urljoin(href.strip())
@@ -29,7 +31,7 @@ class TarafdariSpider(scrapy.Spider):
             yield scrapy.Request(
                 url,
                 callback=self.parse_article,
-                meta={"list_title": title, "list_date": date}
+                meta={"title": title, "date": date, "timestamp": timestamp}
             )
 
         next_page = response.xpath("//a[contains(@class,'next') or contains(text(),'بعدی')]/@href").get()
@@ -39,9 +41,10 @@ class TarafdariSpider(scrapy.Spider):
     def parse_article(self, response):
         news_item = NewsArticleItem()
         meta = response.meta
-        title = meta.get("list_title")
+        title = meta.get("title")
         url = response.url
-        publish_date = meta.get("list_date")
+        publish_date = meta.get("date")
+        publish_timestamp = meta.get("timestamp")
         category = response.xpath('//div[contains(@class,"field-name-field-category")]//div[contains(@class,"field-item")]/a/text()').getall()
         summary = response.xpath('.//div[contains(@class, "field-name-field-teaser")]//p/text()').get()
         body_paragraphs = response.xpath('//div[contains(@class,"field-name-body")]//div[contains(@class,"field-item")]//text()').getall()
@@ -51,6 +54,7 @@ class TarafdariSpider(scrapy.Spider):
 
         news_item['title'] = title
         news_item['publication_date'] = publish_date
+        news_item['publication_timestamp'] = int(publish_timestamp)
         news_item['content'] = body
         news_item['summary'] = summary
         news_item['category'] = category
