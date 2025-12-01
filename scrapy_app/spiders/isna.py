@@ -5,8 +5,8 @@ from utils.date_parser import parse_date
 
 class IsnaSpider(scrapy.Spider):
     name = "isna"
-    allowed_domains = ["www.isna.ir"]
-    start_urls = ["https://www.isna.ir/page/archive.xhtml"]
+    allowed_domains = ["isna.ir"]
+    start_urls = ["https://isna.ir/page/archive.xhtml"]
 
     def __init__(self, start_date=None, end_date=None, *args, **kwargs):
         super().__init__(*args, **kwargs)

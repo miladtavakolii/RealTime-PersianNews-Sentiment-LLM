@@ -5,8 +5,8 @@ from utils.date_parser import parse_date
 
 class TarafdariSpider(scrapy.Spider):
     name = "tarafdari"
-    allowed_domains = ["www.tarafdari.com"]
-    start_urls = ["https://www.tarafdari.com/static/page/archive"]
+    allowed_domains = ["tarafdari.com"]
+    start_urls = ["https://tarafdari.com/static/page/archive"]
 
     def __init__(self, start_date=None, end_date=None, *args, **kwargs):
         super().__init__(*args, **kwargs)

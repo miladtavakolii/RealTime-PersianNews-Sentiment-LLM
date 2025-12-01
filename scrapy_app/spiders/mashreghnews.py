@@ -5,8 +5,8 @@ from utils.date_parser import parse_date
 
 class MashreghnewsSpider(scrapy.Spider):
     name = "mashreghnews"
-    allowed_domains = ["www.mashreghnews.ir"]
-    start_urls = ["https://www.mashreghnews.ir/archive"]
+    allowed_domains = ["mashreghnews.ir"]
+    start_urls = ["https://mashreghnews.ir/archive"]
 
     def __init__(self, start_date=None, end_date=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -22,7 +22,7 @@ class MashreghnewsSpider(scrapy.Spider):
             date = parse_date(b.xpath("normalize-space(.//time//text())").get())
             timestamp = date.timestamp()
             date = date.isoformat()
-            
+
             if self.end_date and date > self.end_date:
                 continue
             if self.start_date and date < self.start_date:
