@@ -14,7 +14,7 @@ def sanitize_filename(url):
 
 class JsonPerPagePipeline:
     def open_spider(self, spider):
-        self.output_dir = "../data/raw"
+        self.output_dir = "data/raw"
         os.makedirs(self.output_dir, exist_ok=True)
 
     def process_item(self, item, spider):
