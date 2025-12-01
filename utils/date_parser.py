@@ -22,7 +22,7 @@ def parse_date(date_str):
     # ISO 8601 format (Gregorian)
     if "T" in date_str:
         dt = datetime.fromisoformat(date_str)
-        return dt.replace(tzinfo=None).timestamp()
+        return dt.replace(tzinfo=None)
     
     # Short Persian date with month name: 10 azar(fa) 04 - 14:15
     if "-" in date_str and any(m in date_str for m in month_map):
@@ -33,7 +33,7 @@ def parse_date(date_str):
         if year < 100:
             year += 1400
         hour, minute = map(int, time_part.split(":"))
-        return jdatetime.datetime(year, month, int(day), hour, minute).togregorian().timestamp()
+        return jdatetime.datetime(year, month, int(day), hour, minute).togregorian()
 
     # Full Persian date: 1404-09-10 14:34
     if "-" in date_str and " " in date_str:
@@ -42,7 +42,7 @@ def parse_date(date_str):
         if year < 100:
             year += 1400
         hour, minute = map(int, time_part.split(":"))
-        return jdatetime.datetime(year, month, day, hour, minute).togregorian().timestamp()
+        return jdatetime.datetime(year, month, day, hour, minute).togregorian()
 
 
     raise ValueError(f"Unrecognized date format: {date_str}")
