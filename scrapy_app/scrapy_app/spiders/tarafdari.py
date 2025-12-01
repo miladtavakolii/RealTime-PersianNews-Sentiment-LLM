@@ -1,5 +1,6 @@
 import scrapy
 from scrapy_app.items import NewsArticleItem
+from utils.date_parser import parse_date 
 
 
 class TarafdariSpider(scrapy.Spider):
@@ -13,7 +14,7 @@ class TarafdariSpider(scrapy.Spider):
         for b in blocks:
             title = b.xpath('.//h2//a/text()').get()
             href = b.xpath('.//h2//a/@href').get()
-            date = b.xpath('.//abbr[@class="timeago"]/@title').get()
+            date = parse_date(b.xpath('.//abbr[@class="timeago"]/@title').get())
 
             if href:
                 url = response.urljoin(href.strip())

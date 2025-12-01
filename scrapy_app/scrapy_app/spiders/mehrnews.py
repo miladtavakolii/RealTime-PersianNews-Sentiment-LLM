@@ -1,5 +1,6 @@
 import scrapy
 from scrapy_app.items import NewsArticleItem
+from utils.date_parser import parse_date 
 
 
 class MehrnewsSpider(scrapy.Spider):
@@ -13,7 +14,7 @@ class MehrnewsSpider(scrapy.Spider):
         for b in blocks:
             title = b.xpath(".//h3/a/text()").get()
             href = b.xpath(".//h3/a/@href").get()
-            date = b.xpath("normalize-space(.//time//text())").get()
+            date = parse_date(b.xpath("normalize-space(.//time//text())").get())
 
             if href:
                 url = response.urljoin(href.strip())
