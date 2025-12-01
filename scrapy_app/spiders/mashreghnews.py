@@ -22,7 +22,12 @@ class MashreghnewsSpider(scrapy.Spider):
             date = parse_date(b.xpath("normalize-space(.//time//text())").get())
             timestamp = date.timestamp()
             date = date.isoformat()
-
+            
+            if self.end_date and date > self.end_date:
+                continue
+            if self.start_date and date < self.start_date:
+                return
+            
             if href:
                 url = response.urljoin(href.strip())
             else:

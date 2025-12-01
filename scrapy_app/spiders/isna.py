@@ -23,6 +23,11 @@ class IsnaSpider(scrapy.Spider):
             timestamp = date.timestamp()
             date = date.isoformat()
 
+            if self.end_date and date > self.end_date:
+                continue
+            if self.start_date and date < self.start_date:
+                return
+
             if href:
                 url = response.urljoin(href.strip())
             else:
