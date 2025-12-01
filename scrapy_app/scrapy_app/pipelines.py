@@ -5,9 +5,21 @@
 
 
 # useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
+import json
+import os
+import hashlib
 
+def sanitize_filename(url):
+    return hashlib.md5(url.encode('utf-8')).hexdigest()
 
-class ScrapyAppPipeline:
+class JsonPerPagePipeline:
+    def open_spider(self, spider):
+        self.output_dir = "../data/raw"
+        os.makedirs(self.output_dir, exist_ok=True)
+
     def process_item(self, item, spider):
+        filename = spider.name + '-' + sanitize_filename(item['url']) + ".json"
+        filepath = os.path.join(self.output_dir, filename)
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(dict(item), f, ensure_ascii=False, indent=4)
         return item
