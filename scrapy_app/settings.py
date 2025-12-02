@@ -59,7 +59,7 @@ DOWNLOAD_DELAY = 1
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "scrapy_app.pipelines.JsonPerPagePipeline": 300,
+   "scrapy_app.pipelines.RawSaveAndPublishPipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -5,21 +5,52 @@
 
 
 # useful for handling different item types with a single interface
-import json
 import os
-import hashlib
+import json
+from utils.rabbitmq import RabbitMQClient
+from utils.sanitize_filename import sanitize_filename
 
-def sanitize_filename(url):
-    return hashlib.md5(url.encode('utf-8')).hexdigest()
 
-class JsonPerPagePipeline:
+class RawSaveAndPublishPipeline:
+    '''
+    Scrapy pipeline responsible for:
+      1. Saving RAW crawled items to disk
+      2. Publishing RAW items to RabbitMQ for preprocessing phase
+    '''
+
+    def __init__(self, raw_dir='data/raw', queue_name='raw_news'):
+        self.raw_dir = raw_dir
+        self.queue_name = queue_name
+        self.client = None
+
+        # Ensure directory exists
+        os.makedirs(self.raw_dir, exist_ok=True)
+
     def open_spider(self, spider):
-        self.output_dir = "data/raw"
-        os.makedirs(self.output_dir, exist_ok=True)
+        '''Initialize RabbitMQ connection when spider starts.'''
+        self.client = RabbitMQClient()
+        self.client.declare_queue(self.queue_name)
 
     def process_item(self, item, spider):
-        filename = spider.name + '-' + sanitize_filename(item['url']) + ".json"
-        filepath = os.path.join(self.output_dir, filename)
+        '''Save RAW file and publish to RabbitMQ.'''
+        data = dict(item)
+        
+        # Save RAW file
+        filename = f'{spider.name}-{sanitize_filename(item["url"])}.json'
+        filepath = os.path.join(self.raw_dir, filename)
+
         with open(filepath, 'w', encoding='utf-8') as f:
-            json.dump(dict(item), f, ensure_ascii=False, indent=4)
+            json.dump(data, f, ensure_ascii=False, indent=2)
+            
+        # Add raw filename to item for later use
+        data['raw_filename'] = filename
+
+        # Publish RAW item to RabbitMQ
+        self.client.publish(self.queue_name, data)
+
         return item
+
+    def close_spider(self, spider):
+        '''Close RabbitMQ connection gracefully.'''
+        if self.client:
+            self.client.close()
