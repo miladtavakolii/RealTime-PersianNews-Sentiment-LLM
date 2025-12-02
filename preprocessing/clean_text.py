@@ -1,22 +1,34 @@
 import re
 from hazm import Normalizer
 
-normalizer = Normalizer()
 
-def clean_text(text: str) -> str:
-    if not text:
-        return ""
+class TextCleaner:
+    '''A modular and extensible Persian text cleaner.'''
 
-    #remove HTML tags
-    text = re.sub(r"<.*?>", " ", text)
+    def __init__(self):
+        # Initialize heavy modules one time only
+        self.normalizer = Normalizer()
 
-    #persian text normilize
-    text = normalizer.normalize(text)
+        # Precompile regex patterns (faster)
+        self.html_pattern = re.compile(r'<.*?>')
+        self.emoji_pattern = re.compile(r'[^\w\sآ-ی]')
+        self.space_pattern = re.compile(r'\s+')
 
-    #remove emojies
-    text = re.sub(r"[^\w\sآ-ی]", " ", text)
+    def clean(self, text: str) -> str:
+        '''Clean the input Persian text.'''
+        if not text:
+            return ''
 
-    #remove extra spaces
-    text = re.sub(r"\s+", " ", text).strip()
+        # Remove HTML tags
+        text = self.html_pattern.sub(' ', text)
 
-    return text
+        # Normalize Persian text
+        text = self.normalizer.normalize(text)
+
+        # Remove emojis & non-Persian characters
+        text = self.emoji_pattern.sub(' ', text)
+
+        # Remove extra spaces
+        text = self.space_pattern.sub(' ', text).strip()
+
+        return text
