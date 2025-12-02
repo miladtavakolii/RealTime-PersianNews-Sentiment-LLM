@@ -39,7 +39,7 @@ class RabbitMQClient:
         self.channel = self.connection.channel()
 
     def declare_queue(self, queue_name):
-
+        '''Declare a queue (idempotent).'''
         self.channel.queue_declare(queue=queue_name, durable=self.durable)
 
     def publish(self, queue_name, message_dict):
