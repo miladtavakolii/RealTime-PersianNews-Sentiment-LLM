@@ -1,8 +1,9 @@
 import jdatetime
 from datetime import datetime
+from typing import Union
 
 # Convert Persian digits to English digits
-def fa_to_en_numbers(s):
+def fa_to_en_numbers(s: str) -> str:
     fa_numbers = "۰۱۲۳۴۵۶۷۸۹"
     en_numbers = "0123456789"
     for f, e in zip(fa_numbers, en_numbers):
@@ -16,7 +17,19 @@ month_map = {
     "آذر": 9, "دی": 10, "بهمن": 11, "اسفند": 12
 }
 
-def parse_date(date_str):
+def parse_date(date_str: str) -> Union[datetime, jdatetime.datetime]:
+    """
+    Parse a Persian or Gregorian date string and return the corresponding Gregorian datetime.
+
+    Args:
+        date_str: The date string in Persian or Gregorian format.
+
+    Returns:
+        Returns a Gregorian `datetime` object if the date is in Gregorian format, or a `jdatetime.datetime` object if the date is in Persian format.
+
+    Raises:
+        ValueError: If the date format is unrecognized.
+    """
     date_str = fa_to_en_numbers(date_str.strip())
 
     # ISO 8601 format (Gregorian)
@@ -29,11 +42,11 @@ def parse_date(date_str):
         date_part, time_part = date_str.split(" - ")
         day, month_name, year = date_part.split()
         month = month_map[month_name]
-        year = int(year)
-        if year < 100:
-            year += 1400
+        int_year: int = int(year)
+        if int_year < 100:
+            int_year += 1400
         hour, minute = map(int, time_part.split(":"))
-        return jdatetime.datetime(year, month, int(day), hour, minute).togregorian()
+        return jdatetime.datetime(int_year, month, int(day), hour, minute).togregorian()
 
     # Full Persian date: 1404-09-10 14:34
     if "-" in date_str and " " in date_str:

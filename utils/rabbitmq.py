@@ -2,31 +2,42 @@ import os
 import json
 import pika
 from dotenv import load_dotenv
+from typing import Optional, Any
 
 load_dotenv()
 
 
 class RabbitMQClient:
-    '''
+    """
     A reusable RabbitMQ client for publishing and consuming messages.
-    '''
 
-    def __init__(self, queue_name=None, durable=True):
-        self.host = os.getenv('RABBITMQ_HOST', 'localhost')
-        self.port = int(os.getenv('RABBITMQ_PORT', 5672))
-        self.user = os.getenv('RABBITMQ_USER')
-        self.password = os.getenv('RABBITMQ_PASS')
-        self.queue_name = queue_name
-        self.durable = durable
+    This class allows connecting to a RabbitMQ server, declaring queues, publishing messages,
+    and consuming messages with a callback function.
+    """
 
-        self.connection = None
-        self.channel = None
+    def __init__(self, queue_name: Optional[str] = None, durable: bool = True):
+        """
+        Initialize the RabbitMQ client with connection settings and optionally declare a queue.
+
+        Args:
+            queue_name: The name of the queue to connect to. Default is None.
+            durable: If True, the queue will survive server restarts.
+        """
+        self.host: str = os.getenv('RABBITMQ_HOST', 'localhost')
+        self.port: int = int(os.getenv('RABBITMQ_PORT', 5672))
+        self.user: Optional[str] = os.getenv('RABBITMQ_USER')
+        self.password: Optional[str] = os.getenv('RABBITMQ_PASS')
+        self.queue_name: Optional[str] = queue_name
+        self.durable: bool = durable
+
+        self.connection
+        self.channel
 
         self.connect()
         if queue_name:
             self.declare_queue(queue_name)
 
-    def connect(self):
+    def connect(self) -> None:
         '''Connect to RabbitMQ with stored env credentials.'''
         credentials = pika.PlainCredentials(self.user, self.password)
         params = pika.ConnectionParameters(
@@ -38,11 +49,11 @@ class RabbitMQClient:
         self.connection = pika.BlockingConnection(params)
         self.channel = self.connection.channel()
 
-    def declare_queue(self, queue_name):
+    def declare_queue(self, queue_name: str) -> None:
         '''Declare a queue (idempotent).'''
         self.channel.queue_declare(queue=queue_name, durable=self.durable)
 
-    def publish(self, queue_name, message_dict):
+    def publish(self, queue_name: str, message_dict: dict) -> None:
         '''Publish a message to the specified queue.'''
         self.channel.basic_publish(
             exchange='',
@@ -53,7 +64,7 @@ class RabbitMQClient:
             )
         )
 
-    def consume(self, queue_name, callback, prefetch=1):
+    def consume(self, queue_name: str, callback: Any, prefetch: int = 1) -> None:
         '''Start consuming messages from the specified queue.'''
         self.channel.queue_declare(queue=queue_name, durable=self.durable)
         self.channel.basic_qos(prefetch_count=prefetch)
@@ -65,7 +76,7 @@ class RabbitMQClient:
         print(f' [*] Waiting for messages in "{queue_name}" ...')
         self.channel.start_consuming()
 
-    def close(self):
+    def close(self) -> None:
         '''Close the RabbitMQ connection.'''
         if self.connection:
             self.connection.close()
