@@ -13,12 +13,31 @@ from utils.sanitize_filename import sanitize_filename
 
 class RawSaveAndPublishPipeline:
     '''
-    Scrapy pipeline responsible for:
-      1. Saving RAW crawled items to disk
-      2. Publishing RAW items to RabbitMQ for preprocessing phase
+    Pipeline responsible for:
+
+        1. Saving RAW crawled items to disk as JSON files.
+        2. Publishing RAW items to a RabbitMQ queue for downstream preprocessing.
+
+    Workflow:
+        - On spider open: initializes RabbitMQ client + queue
+        - On item process:
+              * Saves item to disk under `data/raw/<spider-name>-<filename>.json`
+              * Publishes JSON to RabbitMQ
+        - On spider close: closes RabbitMQ connection
+
+    Args:
+        raw_dir: Directory path to store raw JSON files.
+        queue_name: RabbitMQ queue name for sending items.
     '''
 
     def __init__(self, raw_dir='data/raw', queue_name='raw_news'):
+        '''
+        Initialize pipeline with directories and queue configuration.
+
+        Args:
+            raw_dir: Directory where JSON files are saved.
+            queue_name: RabbitMQ queue for output publishing.
+        '''
         self.raw_dir = raw_dir
         self.queue_name = queue_name
         self.client = None
@@ -27,12 +46,28 @@ class RawSaveAndPublishPipeline:
         os.makedirs(self.raw_dir, exist_ok=True)
 
     def open_spider(self, spider):
-        '''Initialize RabbitMQ connection when spider starts.'''
+        '''
+        Called when the spider starts.
+
+        Initializes RabbitMQ connection and declares queue.
+
+        Args:
+            spider: The running spider instance.
+        '''
         self.client = RabbitMQClient()
         self.client.declare_queue(self.queue_name)
 
     def process_item(self, item, spider):
-        '''Save RAW file and publish to RabbitMQ.'''
+        '''
+        Save item to disk and publish to RabbitMQ.
+
+        Args:
+            item (dict | Item): Extracted news item.
+            spider (scrapy.Spider): Spider instance.
+
+        Returns:
+            item: The same item, unchanged.
+        '''
         data = dict(item)
         
         # Save RAW file
@@ -51,6 +86,13 @@ class RawSaveAndPublishPipeline:
         return item
 
     def close_spider(self, spider):
-        '''Close RabbitMQ connection gracefully.'''
+        '''
+        Called when the spider finishes.
+
+        Closes the RabbitMQ connection gracefully.
+
+        Args:
+            spider (scrapy.Spider): The spider that has finished execution
+        '''
         if self.client:
             self.client.close()
