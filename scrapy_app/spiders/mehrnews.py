@@ -2,9 +2,24 @@ from .base_spider import BaseNewsSpider
 
 
 class MehrnewsSpider(BaseNewsSpider):
-    name = "mehrnews"
-    allowed_domains = ["www.mehrnews.com"]
-    start_urls = ["https://www.mehrnews.com/archive"]
+    '''
+    Spider for crawling MehrNews news archive and article pages.
+
+    Inherits:
+        BaseNewsSpider — handles listing traversal and date filtering.
+
+    Overrides:
+        - Listing XPaths specific to MehrNews
+        - Article detail XPaths
+
+    Attributes:
+        name: Spider name used by Scrapy commands.
+        allowed_domains: Domain restriction for crawling.
+        start_urls: Entry archive page to begin crawling.
+    '''
+    name = 'mehrnews'
+    allowed_domains = ['www.mehrnews.com']
+    start_urls = ['https://www.mehrnews.com/archive']
 
     # Listing XPaths
     LIST_BLOCK_XPATH = "//div[@class='desc']"

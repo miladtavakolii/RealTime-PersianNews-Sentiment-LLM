@@ -2,9 +2,24 @@ from .base_spider import BaseNewsSpider
 
 
 class IsnaSpider(BaseNewsSpider):
-    name = "isna"
-    allowed_domains = ["www.isna.ir"]
-    start_urls = ["https://www.isna.ir/page/archive.xhtml"]
+    '''
+    Spider for crawling ISNA news archive and article pages.
+
+    Inherits:
+        BaseNewsSpider — handles listing traversal and date filtering.
+
+    Overrides:
+        - Listing XPaths specific to ISNA
+        - Article detail XPaths
+
+    Attributes:
+        name: Spider name used by Scrapy commands.
+        allowed_domains: Domain restriction for crawling.
+        start_urls: Entry archive page to begin crawling.
+    '''
+    name = 'isna'
+    allowed_domains = ['www.isna.ir']
+    start_urls = ['https://www.isna.ir/page/archive.xhtml']
 
     # Listing XPaths
     LIST_BLOCK_XPATH = "//div[@class='desc']"

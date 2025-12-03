@@ -2,9 +2,24 @@ from .base_spider import BaseNewsSpider
 
 
 class TarafdariSpider(BaseNewsSpider):
-    name = "tarafdari"
-    allowed_domains = ["www.tarafdari.com"]
-    start_urls = ["https://www.tarafdari.com/static/page/archive"]
+    '''
+    Spider for crawling Tarafdari news archive and article pages.
+
+    Inherits:
+        BaseNewsSpider — handles listing traversal and date filtering.
+
+    Overrides:
+        - Listing XPaths specific to Tarafdari
+        - Article detail XPaths
+
+    Attributes:
+        name: Spider name used by Scrapy commands.
+        allowed_domains: Domain restriction for crawling.
+        start_urls: Entry archive page to begin crawling.
+    '''
+    name = 'tarafdari'
+    allowed_domains = ['www.tarafdari.com']
+    start_urls = ['https://www.tarafdari.com/static/page/archive']
 
     # Listing XPaths
     LIST_BLOCK_XPATH = '//article[contains(@class, "node-content")]'

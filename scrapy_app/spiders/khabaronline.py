@@ -2,9 +2,24 @@ from .base_spider import BaseNewsSpider
 
 
 class KhabaronlineSpider(BaseNewsSpider):
-    name = "khabaronline"
-    allowed_domains = ["www.khabaronline.ir"]
-    start_urls = ["https://www.khabaronline.ir/archive"]
+    '''
+    Spider for crawling KhabarOnline news archive and article pages.
+
+    Inherits:
+        BaseNewsSpider — handles listing traversal and date filtering.
+
+    Overrides:
+        - Listing XPaths specific to KhabarOnline
+        - Article detail XPaths
+
+    Attributes:
+        name: Spider name used by Scrapy commands.
+        allowed_domains: Domain restriction for crawling.
+        start_urls: Entry archive page to begin crawling.
+    '''
+    name = 'khabaronline'
+    allowed_domains = ['www.khabaronline.ir']
+    start_urls = ['https://www.khabaronline.ir/archive']
 
     # Listing XPaths
     LIST_BLOCK_XPATH = "//div[@class='desc']"

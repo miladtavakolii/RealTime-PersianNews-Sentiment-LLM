@@ -2,9 +2,24 @@ from .base_spider import BaseNewsSpider
 
 
 class MashreghnewsSpider(BaseNewsSpider):
-    name = "mashreghnews"
-    allowed_domains = ["www.mashreghnews.ir"]
-    start_urls = ["https://www.mashreghnews.ir/archive"]
+    '''
+    Spider for crawling MashreghNews news archive and article pages.
+
+    Inherits:
+        BaseNewsSpider — handles listing traversal and date filtering.
+
+    Overrides:
+        - Listing XPaths specific to MashreghNews
+        - Article detail XPaths
+
+    Attributes:
+        name: Spider name used by Scrapy commands.
+        allowed_domains: Domain restriction for crawling.
+        start_urls: Entry archive page to begin crawling.
+    '''
+    name = 'mashreghnews'
+    allowed_domains = ['www.mashreghnews.ir']
+    start_urls = ['https://www.mashreghnews.ir/archive']
 
     # Listing XPaths
     LIST_BLOCK_XPATH = "//div[@class='desc']"
