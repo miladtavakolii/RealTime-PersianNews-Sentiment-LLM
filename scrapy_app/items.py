@@ -21,11 +21,11 @@ class NewsArticleItem(scrapy.Item):
         tags: List of article tags.
         url: Absolute URL of the article page.
     '''
-    title = scrapy.Field()
-    publication_date = scrapy.Field()
-    publication_timestamp = scrapy.Field()
-    content = scrapy.Field()
-    summary = scrapy.Field()
-    category = scrapy.Field()
-    tags = scrapy.Field()
-    url = scrapy.Field()
+    title: str = scrapy.Field()  # type: ignore
+    publication_date: str = scrapy.Field()  # type: ignore
+    publication_timestamp: int = scrapy.Field()  # type: ignore
+    content: str = scrapy.Field()  # type: ignore
+    summary: Optional[str] = scrapy.Field()  # type: ignore
+    category: List[str] = scrapy.Field()  # type: ignore
+    tags: List[str] = scrapy.Field()  # type: ignore
+    url: str = scrapy.Field()  # type: ignore

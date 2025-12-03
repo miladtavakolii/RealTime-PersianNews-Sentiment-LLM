@@ -9,6 +9,8 @@ import os
 import json
 from utils.rabbitmq import RabbitMQClient
 from utils.sanitize_filename import sanitize_filename
+from scrapy import Spider
+from typing import Dict, Any
 
 
 class RawSaveAndPublishPipeline:
@@ -30,7 +32,7 @@ class RawSaveAndPublishPipeline:
         queue_name: RabbitMQ queue name for sending items.
     '''
 
-    def __init__(self, raw_dir='data/raw', queue_name='raw_news'):
+    def __init__(self, raw_dir: str = 'data/raw', queue_name: str = 'raw_news'):
         '''
         Initialize pipeline with directories and queue configuration.
 
@@ -40,12 +42,11 @@ class RawSaveAndPublishPipeline:
         '''
         self.raw_dir = raw_dir
         self.queue_name = queue_name
-        self.client = None
 
         # Ensure directory exists
         os.makedirs(self.raw_dir, exist_ok=True)
 
-    def open_spider(self, spider):
+    def open_spider(self, spider: Spider) -> None:
         '''
         Called when the spider starts.
 
@@ -54,10 +55,10 @@ class RawSaveAndPublishPipeline:
         Args:
             spider: The running spider instance.
         '''
-        self.client = RabbitMQClient()
+        self.client: RabbitMQClient = RabbitMQClient()
         self.client.declare_queue(self.queue_name)
 
-    def process_item(self, item, spider):
+    def process_item(self, item: Dict[str, Any], spider: Spider) -> Dict[str, Any]:
         '''
         Save item to disk and publish to RabbitMQ.
 
@@ -69,14 +70,14 @@ class RawSaveAndPublishPipeline:
             item: The same item, unchanged.
         '''
         data = dict(item)
-        
+
         # Save RAW file
         filename = f'{spider.name}-{sanitize_filename(item["url"])}.json'
         filepath = os.path.join(self.raw_dir, filename)
 
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-            
+
         # Add raw filename to item for later use
         data['raw_filename'] = filename
 
@@ -85,7 +86,7 @@ class RawSaveAndPublishPipeline:
 
         return item
 
-    def close_spider(self, spider):
+    def close_spider(self, spider: Spider) -> None:
         '''
         Called when the spider finishes.
 

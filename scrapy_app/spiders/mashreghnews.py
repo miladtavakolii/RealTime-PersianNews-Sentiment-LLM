@@ -1,4 +1,5 @@
 from .base_spider import BaseNewsSpider
+from typing import List
 
 
 class MashreghnewsSpider(BaseNewsSpider):
@@ -17,9 +18,9 @@ class MashreghnewsSpider(BaseNewsSpider):
         allowed_domains: Domain restriction for crawling.
         start_urls: Entry archive page to begin crawling.
     '''
-    name = 'mashreghnews'
-    allowed_domains = ['www.mashreghnews.ir']
-    start_urls = ['https://www.mashreghnews.ir/archive']
+    name: str = 'mashreghnews'
+    allowed_domains: List[str] = ['www.mashreghnews.ir']
+    start_urls: List[str] = ['https://www.mashreghnews.ir/archive']
 
     # Listing XPaths
     LIST_BLOCK_XPATH = "//div[@class='desc']"

@@ -1,4 +1,5 @@
 from .base_spider import BaseNewsSpider
+from typing import List
 
 
 class IsnaSpider(BaseNewsSpider):
@@ -17,9 +18,9 @@ class IsnaSpider(BaseNewsSpider):
         allowed_domains: Domain restriction for crawling.
         start_urls: Entry archive page to begin crawling.
     '''
-    name = 'isna'
-    allowed_domains = ['www.isna.ir']
-    start_urls = ['https://www.isna.ir/page/archive.xhtml']
+    name: str = 'isna'
+    allowed_domains: List[str] = ['www.isna.ir']
+    start_urls: List[str] = ['https://www.isna.ir/page/archive.xhtml']
 
     # Listing XPaths
     LIST_BLOCK_XPATH = "//div[@class='desc']"

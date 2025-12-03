@@ -1,5 +1,8 @@
 import scrapy
+from scrapy_app.items import NewsArticleItem
 from utils.date_parser import parse_date
+from typing import Optional, Any, List, Generator
+from scrapy.http import Response, Request
 
 
 class BaseNewsSpider(scrapy.Spider):
@@ -23,19 +26,19 @@ class BaseNewsSpider(scrapy.Spider):
     '''
 
     # Listing selectors (override per site)
-    LIST_BLOCK_XPATH = None
-    TITLE_XPATH = None
-    URL_XPATH = None
-    DATE_XPATH = None
-    NEXT_PAGE_XPATH = None
+    LIST_BLOCK_XPATH: str = ''
+    TITLE_XPATH: str = ''
+    URL_XPATH: str = ''
+    DATE_XPATH: str = ''
+    NEXT_PAGE_XPATH: str = ''
 
     # Article selectors (override per site)
-    CATEGORY_XPATH = None
-    SUMMARY_XPATH = None
-    BODY_XPATH = None
-    TAGS_XPATH = None
+    CATEGORY_XPATH: str = ''
+    SUMMARY_XPATH: str = ''
+    BODY_XPATH: str = ''
+    TAGS_XPATH: str = ''
 
-    def __init__(self, start_date=None, end_date=None, *args, **kwargs):
+    def __init__(self, start_date: Optional[int] = None, end_date: Optional[int] = None, *args: Any, **kwargs: Any) -> None:
         '''
         Initialize spider with optional date filters.
 
@@ -47,7 +50,7 @@ class BaseNewsSpider(scrapy.Spider):
         self.start_date = start_date
         self.end_date = end_date
 
-    def parse(self, response):
+    def parse(self, response: Response) -> Generator[Request, None, None]:
         '''
         Parse listing/archive pages.
 
@@ -64,16 +67,16 @@ class BaseNewsSpider(scrapy.Spider):
         blocks = response.xpath(self.LIST_BLOCK_XPATH)
 
         for b in blocks:
-            title = b.xpath(self.TITLE_XPATH).get()
-            href = b.xpath(self.URL_XPATH).get()
-            date_str = b.xpath(self.DATE_XPATH).get()
+            title: Optional[str] = b.xpath(self.TITLE_XPATH).get()
+            href: Optional[str] = b.xpath(self.URL_XPATH).get()
+            date_str: Optional[str] = b.xpath(self.DATE_XPATH).get()
 
             if not date_str:
                 continue
 
             dt = parse_date(date_str)
-            iso = dt.isoformat()
-            ts = dt.timestamp()
+            iso: str = dt.isoformat()
+            ts: float = dt.timestamp()
 
             # Date filtering base time
             if self.end_date and ts > self.end_date:
@@ -94,7 +97,7 @@ class BaseNewsSpider(scrapy.Spider):
         if next_page:
             yield response.follow(next_page, callback=self.parse)
 
-    def parse_article(self, response):
+    def parse_article(self, response: Response) -> Generator[NewsArticleItem, None, None]:
         '''
         Generic article page parser.
 
@@ -118,25 +121,32 @@ class BaseNewsSpider(scrapy.Spider):
         item = NewsArticleItem()
 
         # Simple direct fields
-        item['title'] = meta['title']
-        item['publication_date'] = meta['date']
+        item['title'] = str(meta['title'])
+        item['publication_date'] = str(meta['date'])
         item['publication_timestamp'] = int(meta['timestamp'])
-        item['url'] = response.url
+        item['url'] = str(response.url)
 
         # Extract category
-        category = response.xpath(self.CATEGORY_XPATH).getall()
-        item['category'] = [c.strip() for c in category if c.strip()]
+        category_list: List[str] = [
+            c.strip() for c in response.xpath(self.CATEGORY_XPATH).getall()
+            if c.strip()
+        ]
+        item["category"] = category_list
 
         # Summary
-        item['summary'] = response.xpath(self.SUMMARY_XPATH).get()
+        summary: Optional[str] = response.xpath(self.SUMMARY_XPATH).get()
+        item["summary"] = summary
 
         # Body paragraphs
-        paragraphs = response.xpath(self.BODY_XPATH).getall()
-        body = '\n'.join([p.strip() for p in paragraphs if p.strip()])
-        item['content'] = body
+        paragraphs: List[str] = response.xpath(self.BODY_XPATH).getall()
+        body: str = "\n".join([p.strip() for p in paragraphs if p.strip()])
+        item["content"] = body
 
         # Tags
-        tags = response.xpath(self.TAGS_XPATH).getall()
-        item['tags'] = [t.strip() for t in tags if t.strip()]
+        tags: List[str] = [
+            t.strip() for t in response.xpath(self.TAGS_XPATH).getall()
+            if t.strip()
+        ]
+        item["tags"] = tags
 
         yield item

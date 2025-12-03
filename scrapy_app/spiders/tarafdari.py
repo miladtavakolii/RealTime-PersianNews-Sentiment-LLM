@@ -1,4 +1,5 @@
 from .base_spider import BaseNewsSpider
+from typing import List
 
 
 class TarafdariSpider(BaseNewsSpider):
@@ -17,9 +18,9 @@ class TarafdariSpider(BaseNewsSpider):
         allowed_domains: Domain restriction for crawling.
         start_urls: Entry archive page to begin crawling.
     '''
-    name = 'tarafdari'
-    allowed_domains = ['www.tarafdari.com']
-    start_urls = ['https://www.tarafdari.com/static/page/archive']
+    name: str = 'tarafdari'
+    allowed_domains: List[str] = ['www.tarafdari.com']
+    start_urls: List[str] = ['https://www.tarafdari.com/static/page/archive']
 
     # Listing XPaths
     LIST_BLOCK_XPATH = '//article[contains(@class, "node-content")]'
