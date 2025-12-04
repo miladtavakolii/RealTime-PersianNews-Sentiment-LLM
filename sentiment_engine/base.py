@@ -11,8 +11,8 @@ class BaseSentimentProvider(ABC):
     - Parsing model JSON output
     """
 
-    def __init__(self, prompt_format: str):
-        self.prompt_template = prompt_format
+    def __init__(self, prompt_template: str):
+        self.prompt_template = prompt_template
 
     @abstractmethod
     def generate(self, prompt: str) -> str:
