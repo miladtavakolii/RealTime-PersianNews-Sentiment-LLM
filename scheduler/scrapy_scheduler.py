@@ -1,7 +1,7 @@
 import json
-import asyncio
-from datetime import datetime
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+import subprocess
+from apscheduler.schedulers.blocking import BlockingScheduler
+import datetime
 
 from scheduler.spider_runner import SpiderRunner
 
@@ -12,12 +12,12 @@ class ScrapyScheduler:
 
     Features:
     - Each spider has its own independent interval
-    - Each spider is executed via the Scrapy API, not subprocess
+    - Each spider is executed via subprocess
     - Fully asynchronous (asyncio + APScheduler)
     - Spiders can run in parallel
     '''
 
-    def __init__(self, spider_configs: dict, meta_dir: str = 'meta'):
+    def __init__(self, spider_configs: list[dict], meta_dir: str = 'meta'):
         '''
         Initialize the scheduler.
 
@@ -31,7 +31,7 @@ class ScrapyScheduler:
         '''
         self.spider_configs = spider_configs
         self.meta_dir = meta_dir
-        self.scheduler = AsyncIOScheduler()
+        self.scheduler = BlockingScheduler()
 
     def ts_file(self, spider_name: str) -> str:
         '''Return the path to the timestamp file for the given spider.'''
@@ -55,53 +55,32 @@ class ScrapyScheduler:
             data = json.load(f)
             return data.get('last_timestamp', 0)
 
-    async def run_single_spider(self, spider_name: str) -> None:
+    def run_single_spider(self, spider_name: str) -> None:
         '''
         Callback function that runs a single spider when triggered by APScheduler.
 
         Args:
             spider_name: name of spider that want to start
         '''
-        runner = SpiderRunner(
-            spider_name=spider_name,
-            last_ts_provider=self.load_last_ts
-        )
+        subprocess.run([
+            "scrapy",
+            "crawl",
+            spider_name,
+            "-a", f"start_ts={self.load_last_ts(spider_name)}",
+        ])
 
-        await runner.run()
-
-    def schedule_spider(self, spider_name: str, interval_minutes: int) -> None:
-        '''
-        Assigns a separate APScheduler job to one spider.
-
-        Args:
-            spider_name: Spider to schedule
-            interval_minutes: Frequency in minutes
-        '''
-        print(
-            f'[Scheduler] Scheduling spider={spider_name} every {interval_minutes} minutes'
-        )
-
-        self.scheduler.add_job(
-            self.run_single_spider,
-            args=[spider_name],
-            trigger='interval',
-            minutes=interval_minutes,
-            next_run_time=datetime.now()  # first run immediately
-        )
-
-    def start(self) -> None:
+    async def start(self) -> None:
         '''
         Start the APScheduler and the asyncio event loop.
 
         Creates independent jobs for each spider and keeps the event loop alive.
         '''
         for cfg in self.spider_configs:
-            self.schedule_spider(cfg['spider'], cfg['interval'])
-
+            self.scheduler.add_job(
+                self.run_single_spider(cfg['spider']),
+                "interval",
+                minutes=cfg['interval'],
+                next_run_time=datetime.datetime.now()  # run immediately
+            )
+        print("[Scheduler] Scheduler is running...")
         self.scheduler.start()
-
-        # Keep asyncio alive for good
-        try:
-            asyncio.get_event_loop().run_forever()
-        except KeyboardInterrupt:
-            print('[Scheduler] Stopped by user.')
