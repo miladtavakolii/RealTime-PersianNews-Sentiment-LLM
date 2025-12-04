@@ -7,4 +7,6 @@ data/sentiments/*
 !data/raw/.gitkeep
 !data/cleaned/.gitkeep
 !data/sentiments/.gitkeep
+meta/*
+!meta/.gitkeep
 .vscode/
