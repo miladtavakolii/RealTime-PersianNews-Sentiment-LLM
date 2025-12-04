@@ -40,13 +40,13 @@ def parse_date(date_str: str) -> Union[datetime, jdatetime.datetime]:
     # Short Persian date with month name: 10 azar(fa) 04 - 14:15
     if "-" in date_str and any(m in date_str for m in month_map):
         date_part, time_part = date_str.split(" - ")
-        day, _, year = map(int, date_part.split())
-        _, month_name, _ = date_part.split()
+        day_str, month_name, year_str = date_part.split()
         month = month_map[month_name]
+        year = int(year_str)
         if year < 100:
             year += 1400
         hour, minute = map(int, time_part.split(":"))
-        return jdatetime.datetime(year, month, int(day), hour, minute).togregorian()
+        return jdatetime.datetime(year, month, int(day_str), hour, minute).togregorian()
 
     # Full Persian date: 1404-09-10 14:34
     if "-" in date_str and " " in date_str:
