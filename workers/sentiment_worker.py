@@ -5,6 +5,7 @@ from typing import Any, Dict
 from utils.rabbitmq import RabbitMQClient
 from sentiment_engine.engine import SentimentEngine
 from sentiment_engine.ollama_client import OllamaClient
+from scheduler.write_last_timestamp import write_last_timestamp
 
 
 class SentimentWorker:
@@ -59,6 +60,8 @@ class SentimentWorker:
 
         # self.rabbit.publish(self.output_queue, article)
 
+        write_last_timestamp(article.get('site_name', ''), article.get('publication_timestamp', ''))
+
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def _save_to_file(self, article: Dict[str, Any]) -> None:
@@ -67,7 +70,7 @@ class SentimentWorker:
         '''
         filename: str = article['raw_filename']
         filepath = os.path.join(self.out_dir, f'{filename}.json')
-        
+
         del article['raw_filename']  # Remove raw filename before saving
 
         with open(filepath, 'w', encoding='utf-8') as f:

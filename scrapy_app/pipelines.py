@@ -72,7 +72,7 @@ class RawSaveAndPublishPipeline:
             item: The same item, unchanged.
         '''
         data = dict(item)
-
+        data['site_name'] = spider.name
         # Save RAW file
         filename = f'{spider.name}-{sanitize_filename(item["url"])}.json'
         filepath = os.path.join(self.raw_dir, filename)
