@@ -31,4 +31,4 @@ websites:
 
 model:
   name: "gemma3:4b-it-qat"
-  prompt_template_path: "config/rompt_template.txt"
+  prompt_template_path: "config/prompt_template.txt"
