@@ -74,10 +74,11 @@ class ScrapyScheduler:
         '''
         for cfg in self.spider_configs:
             self.scheduler.add_job(
-                self.run_single_spider(cfg['spider']),
+                self.run_single_spider,
                 "interval",
                 minutes=cfg['interval'],
-                next_run_time=datetime.datetime.now()  # run immediately
+                next_run_time=datetime.datetime.now(),
+                args=[cfg['spider']]
             )
         print("[Scheduler] Scheduler is running...")
         self.scheduler.start()
