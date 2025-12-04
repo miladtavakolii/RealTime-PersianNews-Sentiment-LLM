@@ -4,6 +4,8 @@ import pika
 from dotenv import load_dotenv
 from typing import Optional, Any
 
+import pika.channel
+
 load_dotenv()
 
 
@@ -30,8 +32,8 @@ class RabbitMQClient:
         self.queue_name: Optional[str] = queue_name
         self.durable: bool = durable
 
-        self.connection = None
-        self.channel = None
+        self.connection: pika.adapters.BaseConnection = None
+        self.channel: pika.channel.Channel = None
 
         self.connect()
         if queue_name:
