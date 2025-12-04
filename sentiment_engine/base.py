@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
+import json
+import re
 
 
 class BaseSentimentProvider(ABC):
@@ -23,6 +25,30 @@ class BaseSentimentProvider(ABC):
         '''Format prompt with article fields.'''
         return self.prompt_template.format(**kwargs)
 
+    def extract_json(self, text: str) -> dict:
+        """
+        Extract valid JSON from any LLM output.
+        Removes markdown fences, extra text, and returns parsed dict.
+        """
+        # Remove markdown code fences
+        text = text.strip()
+        text = re.sub(r"^```[a-zA-Z]*", "", text)
+        text = re.sub(r"```$", "", text)
+        text = text.strip()
+
+        # Try parse as JSON directly
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            pass
+
+        # If JSON is inside text somewhere:
+        match = re.search(r"\{[\s\S]*\}", text)
+        if match:
+            return json.loads(match.group(0))
+
+        raise ValueError("[ERROR] No valid JSON found in model output")
+
     def analyze(self, **fields: Any) -> dict:
         '''
         High-level method:
@@ -37,7 +63,7 @@ class BaseSentimentProvider(ABC):
         raw_output = self.generate(prompt)
 
         try:
-            return json.loads(raw_output)
+            return self.extract_json(raw_output)
         except json.JSONDecodeError:
             raise ValueError(
                 f'[ERROR] Provider returned invalid JSON:\n{raw_output}')
