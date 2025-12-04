@@ -11,6 +11,7 @@ from utils.rabbitmq import RabbitMQClient
 from utils.sanitize_filename import sanitize_filename
 from scrapy import Spider
 from typing import Dict, Any
+import logging
 
 
 class RawSaveAndPublishPipeline:
@@ -45,6 +46,7 @@ class RawSaveAndPublishPipeline:
 
         # Ensure directory exists
         os.makedirs(self.raw_dir, exist_ok=True)
+        logging.getLogger("pika").setLevel(logging.CRITICAL)
 
     def open_spider(self, spider: Spider) -> None:
         '''
