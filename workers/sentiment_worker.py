@@ -65,8 +65,10 @@ class SentimentWorker:
         '''
         Save sentiment-enriched article as .json
         '''
-        filename = article.get('clean_filename', 'unknown')
+        filename: str = article['raw_filename']
         filepath = os.path.join(self.out_dir, f'{filename}.json')
+        
+        del article['raw_filename']  # Remove raw filename before saving
 
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(article, f, ensure_ascii=False, indent=2)

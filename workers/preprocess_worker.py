@@ -78,6 +78,8 @@ class PreprocessWorker:
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(article, f, ensure_ascii=False, indent=2)
 
+        article['raw_filename'] = filename
+
     def start(self) -> None:
         '''
         Starts consuming messages from the input queue.
