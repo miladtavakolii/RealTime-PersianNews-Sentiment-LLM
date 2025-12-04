@@ -30,8 +30,8 @@ class RabbitMQClient:
         self.queue_name: Optional[str] = queue_name
         self.durable: bool = durable
 
-        self.connection
-        self.channel
+        self.connection = None
+        self.channel = None
 
         self.connect()
         if queue_name:
