@@ -25,6 +25,8 @@ class ConfigManager:
             """
             spider_configs = []
             for name, cfg in self.get_websites().items():
+                if cfg['end_date']:
+                    continue
                 spider_configs.append({
                     "spider": name,
                     "interval": cfg.get("interval", 15)

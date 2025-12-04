@@ -4,6 +4,7 @@ from scheduler.scrapy_scheduler import ScrapyScheduler
 from scheduler.write_last_timestamp import write_last_timestamp
 from workers.preprocess_worker import PreprocessWorker
 import logging
+import subprocess
 
 
 class ServiceRunner:
@@ -34,7 +35,13 @@ if __name__ == "__main__":
 
     for cfg in website_date_config:
         if cfg['end_date']:
-            pass
+            subprocess.run([
+                "scrapy",
+                "crawl",
+                cfg['name'],
+                "-a", f"start_date={cfg['start_date']}",
+                "-a", f"end_date={cfg['end_date']}",
+            ])
         else:
             write_last_timestamp(cfg['name'], timestamp=int(cfg['start_date'].timestamp()))
 
