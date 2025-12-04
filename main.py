@@ -3,13 +3,13 @@ asyncioreactor.install()
 import asyncio
 from utils.config_manager import ConfigManager
 from scheduler.scrapy_scheduler import ScrapyScheduler
+from scheduler.write_last_timestamp import write_last_timestamp
 from workers.preprocess_worker import PreprocessWorker
 import logging
 
 
 class ServiceRunner:
-    def __init__(self, config_path: str = "config/settings.yaml"):
-        config = ConfigManager(config_path)
+    def __init__(self, config: ConfigManager):
         self.scheduler = ScrapyScheduler(config.get_spider_configs())
         self.preprocess_worker = PreprocessWorker()
 
@@ -30,6 +30,15 @@ if __name__ == "__main__":
     logging.getLogger("pika").setLevel(logging.WARNING)
     logging.getLogger("pika").disabled = True
 
+    config_path: str = "config/settings.yaml"
+    config = ConfigManager(config_path)
+    website_date_config = config.get_website_date_config()
 
-    runner = ServiceRunner()
+    for cfg in website_date_config:
+        if cfg['end_date']:
+            pass
+        else:
+            write_last_timestamp(cfg['name'], timestamp=int(cfg['start_date'].timestamp()))
+
+    runner = ServiceRunner(config)
     asyncio.run(runner.run())
