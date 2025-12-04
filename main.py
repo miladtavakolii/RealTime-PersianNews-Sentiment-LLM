@@ -1,5 +1,3 @@
-from twisted.internet import asyncioreactor
-asyncioreactor.install()
 import asyncio
 from utils.config_manager import ConfigManager
 from scheduler.scrapy_scheduler import ScrapyScheduler
