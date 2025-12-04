@@ -30,3 +30,13 @@ class ConfigManager:
                     "interval": cfg.get("interval", 15)
                 })
             return spider_configs
+
+    def get_website_date_config(self) -> list[dict]:
+        date_configs = []
+        for name, cfg in self.get_websites().items():
+            date_configs.append({
+                "name": name,
+                "start_date": cfg.get("start_date", 15),
+                "end_date": cfg.get("end_date", None)
+            })
+        return date_configs
