@@ -13,11 +13,11 @@ class ServiceRunner:
         self.scheduler = ScrapyScheduler(config.get_spider_configs())
         self.preprocess_worker = PreprocessWorker()
 
-    async def start_Preprocess_worker(self):
+    async def start_Preprocess_worker(self) -> None:
         print("[Main] Starting PreprocessWorker...")
         await asyncio.to_thread(self.preprocess_worker.start)
 
-    async def run(self):
+    async def run(self) -> None:
         # Run both scheduler and worker concurrently
         await asyncio.gather(
             self.start_Preprocess_worker(),
