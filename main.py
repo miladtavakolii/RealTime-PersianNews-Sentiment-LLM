@@ -35,6 +35,8 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     logging.getLogger("pika").setLevel(logging.WARNING)
     logging.getLogger("pika").disabled = True
+    
+    proc = subprocess.Popen(["ollama", "serve"])
 
     config_path: str = "config/settings.yaml"
     config = ConfigManager(config_path)
