@@ -3,9 +3,6 @@ import subprocess
 from apscheduler.schedulers.blocking import BlockingScheduler
 import datetime
 
-from scheduler.spider_runner import SpiderRunner
-
-
 class ScrapyScheduler:
     '''
     Main scheduler responsible for running multiple Scrapy spiders independently.
