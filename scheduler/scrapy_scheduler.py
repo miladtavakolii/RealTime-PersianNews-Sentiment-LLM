@@ -63,7 +63,7 @@ class ScrapyScheduler:
             "scrapy",
             "crawl",
             spider_name,
-            "-a", f"start_ts={self.load_last_ts(spider_name)}",
+            "-a", f"start_date={self.load_last_ts(spider_name)}",
         ])
 
     async def start(self) -> None:
