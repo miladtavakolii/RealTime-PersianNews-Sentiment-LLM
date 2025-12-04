@@ -76,12 +76,12 @@ class BaseNewsSpider(scrapy.Spider):
 
             dt = parse_date(date_str)
             iso: str = dt.isoformat()
-            ts: float = dt.timestamp()
+            ts: int = int(dt.timestamp())
 
             # Date filtering base time
-            if self.end_date and ts > self.end_date:
+            if self.end_date and ts > int(self.end_date):
                 continue
-            if self.start_date and ts < self.start_date:
+            if self.start_date and ts < int(self.start_date):
                 return
 
             url = response.urljoin(href.strip()) if href else None
