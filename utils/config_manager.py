@@ -42,3 +42,6 @@ class ConfigManager:
                 "end_date": cfg.get("end_date", None)
             })
         return date_configs
+    
+    def get_model_info(self) -> dict:
+        return self.config['model']
