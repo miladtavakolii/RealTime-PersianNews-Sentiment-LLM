@@ -46,7 +46,7 @@ class RawSaveAndPublishPipeline:
 
         # Ensure directory exists
         os.makedirs(self.raw_dir, exist_ok=True)
-        logging.getLogger("pika").setLevel(logging.ERROR)
+        logging.getLogger('pika').setLevel(logging.ERROR)
 
     def open_spider(self, spider: Spider) -> None:
         '''

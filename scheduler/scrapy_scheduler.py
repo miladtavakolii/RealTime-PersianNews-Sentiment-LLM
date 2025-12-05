@@ -60,10 +60,10 @@ class ScrapyScheduler:
             spider_name: name of spider that want to start
         '''
         subprocess.run([
-            "scrapy",
-            "crawl",
+            'scrapy',
+            'crawl',
             spider_name,
-            "-a", f"start_date={self.load_last_ts(spider_name)}",
+            '-a', f'start_date={self.load_last_ts(spider_name)}',
         ])
 
     async def start(self) -> None:
@@ -75,10 +75,10 @@ class ScrapyScheduler:
         for cfg in self.spider_configs:
             self.scheduler.add_job(
                 self.run_single_spider,
-                "interval",
+                'interval',
                 minutes=cfg['interval'],
                 next_run_time=datetime.datetime.now(),
                 args=[cfg['spider']]
             )
-        print("[Scheduler] Scheduler is running...")
+        print('[Scheduler] Scheduler is running...')
         self.scheduler.start()
