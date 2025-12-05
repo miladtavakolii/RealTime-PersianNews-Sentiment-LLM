@@ -131,22 +131,22 @@ class BaseNewsSpider(scrapy.Spider):
             c.strip() for c in response.xpath(self.CATEGORY_XPATH).getall()
             if c.strip()
         ]
-        item["category"] = category_list
+        item['category'] = category_list
 
         # Summary
         summary: Optional[str] = response.xpath(self.SUMMARY_XPATH).get()
-        item["summary"] = summary
+        item['summary'] = summary
 
         # Body paragraphs
         paragraphs: List[str] = response.xpath(self.BODY_XPATH).getall()
-        body: str = "\n".join([p.strip() for p in paragraphs if p.strip()])
-        item["content"] = body
+        body: str = '\n'.join([p.strip() for p in paragraphs if p.strip()])
+        item['content'] = body
 
         # Tags
         tags: List[str] = [
             t.strip() for t in response.xpath(self.TAGS_XPATH).getall()
             if t.strip()
         ]
-        item["tags"] = tags
+        item['tags'] = tags
 
         yield item
