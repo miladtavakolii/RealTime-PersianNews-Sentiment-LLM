@@ -36,8 +36,6 @@ if __name__ == "__main__":
     logging.getLogger("pika").setLevel(logging.WARNING)
     logging.getLogger("pika").disabled = True
     
-    proc = subprocess.Popen(["ollama", "serve"])
-
     config_path: str = "config/settings.yaml"
     config = ConfigManager(config_path)
     website_date_config = config.get_website_date_config()
