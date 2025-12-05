@@ -61,4 +61,4 @@ CATEGORIES: {categories}
 TAGS: {tags}
 ────────────────────────────────────────
 
-Now produce the JSON output only.
+Output the sentiment as valid JSON only. Make sure all double quotes inside strings are escaped using backslash (\").
