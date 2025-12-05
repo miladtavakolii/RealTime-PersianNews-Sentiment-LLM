@@ -30,6 +30,7 @@ class BaseSentimentProvider(ABC):
         Extract valid JSON from any LLM output.
         Removes markdown fences, extra text, and returns parsed dict.
         """
+        text = text.replace('”', '\"')  
         # Remove markdown code fences
         text = text.strip()
         text = re.sub(r"^```[a-zA-Z]*", "", text)
