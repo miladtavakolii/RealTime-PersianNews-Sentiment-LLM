@@ -5,6 +5,8 @@ from typing import Any, Dict
 from utils.rabbitmq import RabbitMQClient
 from sentiment_engine.engine import SentimentEngine
 from sentiment_engine.ollama_client import OllamaClient
+from sentiment_engine.gemini_client import GeminiClient
+from sentiment_engine.base import BaseSentimentProvider
 from scheduler.write_last_timestamp import write_last_timestamp
 
 
@@ -67,8 +69,13 @@ class SentimentWorker:
 
         # INIT SENTIMENT ENGINE
         prompt_template = open(model_info['prompt_template_path']).read()
-        provider = OllamaClient(
-            model=model_info['name'], prompt_template=prompt_template)
+        if model_info['provider'] == 'ollama':
+            provider: BaseSentimentProvider = OllamaClient(
+                model=model_info['name'], prompt_template=prompt_template)
+
+        elif model_info['provider'] == 'gemini':
+            provider: BaseSentimentProvider = GeminiClient(
+                model=model_info['name'], prompt_template=prompt_template)
 
         self.engine = SentimentEngine(provider=provider)
 
@@ -108,7 +115,8 @@ class SentimentWorker:
 
         # self.rabbit.publish(self.output_queue, article)
 
-        write_last_timestamp(article.get('site_name', ''), article.get('publication_timestamp', ''))
+        write_last_timestamp(article.get('site_name', ''),
+                             article.get('publication_timestamp', ''))
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 

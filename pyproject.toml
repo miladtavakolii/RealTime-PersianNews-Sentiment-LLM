@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "apscheduler>=3.11.1",
+    "google-genai>=1.53.0",
     "hazm>=0.10.0",
     "jdatetime>=5.2.0",
     "ollama>=0.6.1",
