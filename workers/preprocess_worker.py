@@ -45,10 +45,10 @@ class PreprocessWorker:
         and publishes it to the output queue.
 
         Args:
-            ch (Any): The channel object from RabbitMQ.
-            method (Any): The method associated with the message.
-            props (Any): The properties associated with the message.
-            article (Dict[str, Any]): The article dictionary containing raw data to be cleaned.
+            ch: The channel object from RabbitMQ.
+            method: The method associated with the message.
+            props: The properties associated with the message.
+            article: The article dictionary containing raw data to be cleaned.
         '''
         # Clean text fields
         article['title'] = self.text_cleaner.clean(article['title'])
@@ -69,7 +69,7 @@ class PreprocessWorker:
         Saves the cleaned article to a JSON file in the output directory.
 
         Args:
-            article (Dict[str, Any]): The cleaned article to be saved.
+            article: The cleaned article to be saved.
         '''
         filename: str = article['raw_filename']
         filepath: str = os.path.join(self.out_dir, f'{filename}.json')
