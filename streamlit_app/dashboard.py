@@ -16,7 +16,7 @@ st.title('📰 News Sentiment Analysis Dashboard')
 # Load Data
 loader = SentimentDataLoader('data/sentiments')
 
-@st.cache_data(ttl=20)
+@st.cache_data(ttl=5)
 def load_data() -> pd.DataFrame:
     df = loader.load_all()
 
@@ -70,6 +70,14 @@ if df.empty:
     st.warning('No news found for this time range.')
     st.stop()
 
+site_filter = st.sidebar.radio(
+    'Show news from website:',
+    ['All'] + list(df['site_name'].unique())
+)
+
+if site_filter != 'All':
+    df = df[df['site_name'] == site_filter]
+
 # Sentiment Distribution
 st.subheader('📊 Sentiment Distribution')
 
@@ -80,7 +88,7 @@ fig1 = px.bar(
     title='Sentiment Distribution',
     labels={'index': 'Sentiment', 'value': 'Count'},
 )
-st.plotly_chart(fig1, use_container_width=True)
+st.plotly_chart(fig1, width='stretch')
 
 # Sentiment Count Trend (Frequency Over Time)
 st.subheader('📈 Sentiment Frequency Trend Over Time')
@@ -122,5 +130,5 @@ st.dataframe(
         'tags_str',
         'sentiment_reason'
     ]].head(50),
-    use_container_width=True
+    width='stretch',
 )
