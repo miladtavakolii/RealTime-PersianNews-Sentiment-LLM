@@ -122,10 +122,12 @@ st.subheader('🆕 Latest News')
 
 st.dataframe(
     df.sort_values('publication_date', ascending=False)[[
+        'site_name',
         'publication_date',
         'title',
         'sentiment_label',
         'sentiment_confidence',
+        'content',
         'category_str',
         'tags_str',
         'sentiment_reason'
