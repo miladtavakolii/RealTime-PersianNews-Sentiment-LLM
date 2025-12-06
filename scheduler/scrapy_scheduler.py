@@ -78,7 +78,9 @@ class ScrapyScheduler:
                 'interval',
                 minutes=cfg['interval'],
                 next_run_time=datetime.datetime.now(),
-                args=[cfg['spider']]
+                args=[cfg['spider']],
+                max_instances=1,
+                coalesce=True
             )
         print('[Scheduler] Scheduler is running...')
         self.scheduler.start()
