@@ -81,8 +81,8 @@ class RawSaveAndPublishPipeline:
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
-        # Add raw filename to item for later use
-        data['raw_filename'] = filename
+        # Add raw filename to item for later use        
+        data['raw_filename'] = filename.removesuffix('.json')
 
         # write last timestamp to meta file
         write_real_last_timestamp(spider.name, data['publication_timestamp'])
