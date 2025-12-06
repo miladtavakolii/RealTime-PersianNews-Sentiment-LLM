@@ -7,7 +7,6 @@ from sentiment_engine.engine import SentimentEngine
 from sentiment_engine.ollama_client import OllamaClient
 from sentiment_engine.gemini_client import GeminiClient
 from sentiment_engine.base import BaseSentimentProvider
-from scheduler.write_last_timestamp import write_real_last_timestamp
 
 
 class SentimentWorker:
@@ -114,9 +113,6 @@ class SentimentWorker:
         self._save_to_file(article)
 
         # self.rabbit.publish(self.output_queue, article)
-
-        write_real_last_timestamp(article.get('site_name', ''),
-                             article.get('publication_timestamp', ''))
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 

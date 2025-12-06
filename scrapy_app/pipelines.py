@@ -12,6 +12,7 @@ from utils.sanitize_filename import sanitize_filename
 from scrapy import Spider
 from typing import Dict, Any
 import logging
+from scheduler.write_last_timestamp import write_real_last_timestamp
 
 
 class RawSaveAndPublishPipeline:
@@ -82,6 +83,9 @@ class RawSaveAndPublishPipeline:
 
         # Add raw filename to item for later use
         data['raw_filename'] = filename
+
+        # write last timestamp to meta file
+        write_real_last_timestamp(spider.name, data['timestamp'])
 
         # Publish RAW item to RabbitMQ
         self.client.publish(self.queue_name, data)
