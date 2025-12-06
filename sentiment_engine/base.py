@@ -82,7 +82,7 @@ class BaseSentimentProvider(ABC):
             ValueError:
                 If no valid JSON structure can be recovered.
         '''
-        text = text.replace('”', '\'')
+        text = text.replace('”', '"')
         # Remove markdown code fences
         text = text.strip()
         text = re.sub(r"^```[a-zA-Z]*", "", text)
