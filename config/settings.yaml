@@ -6,7 +6,7 @@ paths:
 websites:
   isna:
     interval: 15
-    start_date: 2025-12-05 23:50:00
+    start_date: 2025-12-06 9:50:00
     end_date: 
 
   # mehrnews:
@@ -30,6 +30,6 @@ websites:
   #   end_date:
 
 model:
-  provider: "gemini"
-  name: "gemini-2.5-pro"
+  provider: "ollama"
+  name: "gemma3:12b"
   prompt_template_path: "config/prompt_template.txt"
