@@ -6,6 +6,7 @@ from workers.preprocess_worker import PreprocessWorker
 from workers.sentiment_worker import SentimentWorker
 import logging
 import subprocess
+import datetime
 
 
 class ServiceRunner:
@@ -41,16 +42,19 @@ if __name__ == "__main__":
     website_date_config = config.get_website_date_config()
 
     for cfg in website_date_config:
-        if cfg['end_date']:
-            subprocess.run([
-                "scrapy",
-                "crawl",
-                cfg['name'],
-                "-a", f"start_date={int(cfg['start_date'].timestamp())}",
-                "-a", f"end_date={int(cfg['end_date'].timestamp())}",
-            ])
+        if cfg['start_date']:
+            if cfg['end_date']:
+                subprocess.run([
+                    "scrapy",
+                    "crawl",
+                    cfg['name'],
+                    "-a", f"start_date={int(cfg['start_date'].timestamp())}",
+                    "-a", f"end_date={int(cfg['end_date'].timestamp())}",
+                ])
+            else:
+                write_last_timestamp(cfg['name'], timestamp=int(cfg['start_date'].timestamp()))
         else:
-            write_last_timestamp(cfg['name'], timestamp=int(cfg['start_date'].timestamp()))
+                write_last_timestamp(cfg['name'], timestamp=int(datetime.datetime.now().timestamp()))
 
     runner = ServiceRunner(config)
     asyncio.run(runner.run())
