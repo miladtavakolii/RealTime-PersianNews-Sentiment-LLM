@@ -1,12 +1,4 @@
 __pycache__/
 *.pyc
 .env
-data/raw/*
-data/cleaned/*
-data/sentiments/*
-!data/raw/.gitkeep
-!data/cleaned/.gitkeep
-!data/sentiments/.gitkeep
-meta/*
-!meta/.gitkeep
 .vscode/
