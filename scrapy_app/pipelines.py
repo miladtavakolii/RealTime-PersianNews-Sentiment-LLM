@@ -85,7 +85,7 @@ class RawSaveAndPublishPipeline:
         data['raw_filename'] = filename
 
         # write last timestamp to meta file
-        write_real_last_timestamp(spider.name, data['timestamp'])
+        write_real_last_timestamp(spider.name, data['publication_timestamp'])
 
         # Publish RAW item to RabbitMQ
         self.client.publish(self.queue_name, data)
