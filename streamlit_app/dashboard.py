@@ -96,9 +96,29 @@ st.subheader('📈 Sentiment Frequency Trend Over Time')
 # Ensure publication_date is datetime
 df['publication_date'] = pd.to_datetime(df['publication_date'])
 
+
+# User selects timeframe
+time_options = {
+    "15 Minute": "15min",
+    "30 Minute": "30min",
+    "1 Hour": "1h",
+    "3 Hour": "3h",
+    "5 Hour": "5h",
+    "10 Hour": "10h",
+    "1 Day": "1d",
+}
+
+selected_label = st.select_slider(
+    "Time Range:",
+    list(time_options.keys()),
+)
+
+# Convert selected label to Pandas resample rule
+time_rule = time_options[selected_label]
+
 # Group by day + sentiment and count number of news per sentiment per day
 trend_df = (
-    df.groupby([df['publication_date'].dt.floor('h'), 'sentiment_label'])
+    df.groupby([df['publication_date'].dt.floor(time_rule), 'sentiment_label'])
       .size()
       .reset_index(name='count')
 )
