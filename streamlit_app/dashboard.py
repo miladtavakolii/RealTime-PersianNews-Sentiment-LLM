@@ -150,7 +150,8 @@ st.dataframe(
         'content',
         'category_str',
         'tags_str',
-        'sentiment_reason'
+        'sentiment_reason',
+        'url'
     ]].head(50),
     width='stretch',
 )
