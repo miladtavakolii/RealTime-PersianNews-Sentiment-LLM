@@ -46,8 +46,8 @@ if __name__ == "__main__":
                 "scrapy",
                 "crawl",
                 cfg['name'],
-                "-a", f"start_date={cfg['start_date']}",
-                "-a", f"end_date={cfg['end_date']}",
+                "-a", f"start_date={int(cfg['start_date'].timestamp())}",
+                "-a", f"end_date={int(cfg['end_date'].timestamp())}",
             ])
         else:
             write_last_timestamp(cfg['name'], timestamp=int(cfg['start_date'].timestamp()))
