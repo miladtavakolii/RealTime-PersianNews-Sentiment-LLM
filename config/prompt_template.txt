@@ -4,7 +4,10 @@ Your job is to analyze a Persian news article and determine its dominant emotion
 You must strictly follow the rules and definitions below.
 
 ────────────────────────────────────────
-### 1) Allowed Sentiment Labels (choose EXACTLY one)
+### 1) The final sentiment field MUST be exactly one of the following values
+You are absolutely forbidden from generating any other label.
+If the sentiment does not clearly match one, choose the closest one — but NEVER invent a new label or 'mixed'.
+
 Use these precise definitions:
 
 1. **"خوشحال‌کننده"**
